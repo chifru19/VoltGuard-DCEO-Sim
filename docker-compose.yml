@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # The 'Common Bus' - MQTT Broker
+  # In a DC, this represents the communication network (SCADA/EPMS)
+  communication_bus:
+    image: eclipse-mosquitto:2.0
+    container_name: dc_communication_bus
+    ports:
+      - "1883:1883"
+    networks:
+      - dc_network
+
+  # Service 1: The Utility Feed (The Grid)
+  utility_feed:
+    build: ./services/utility
+    container_name: utility_provider
+    depends_on:
+      - communication_bus
+    networks:
+      - dc_network
+
+  # Service 2: The UPS (The Critical Load Protector)
+  ups_system:
+    build: ./services/ups
+    container_name: ups_logic_unit
+    depends_on:
+      - communication_bus
+    networks:
+      - dc_network
+
+networks:
+  dc_network:
+    driver: bridge
