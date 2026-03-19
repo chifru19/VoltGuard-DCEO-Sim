@@ -1,0 +1,20 @@
+name: Security Scan             # The name that appears in the "Actions" tab
+
+on:                            # THE TRIGGER
+  push:                        # Run this every time I push code
+    branches: [ "main" ]
+
+jobs:                          # THE TASKS
+  checkov-scan:
+    runs-on: ubuntu-latest     # GitHub will start a fresh Linux computer for this
+    steps:
+      - name: Checkout code    # Step 1: Copy my code onto that Linux computer
+        uses: actions/checkout@v4
+
+      - name: Run Checkov      # Step 2: Use the "Checkov" tool to scan for risks
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: dockerfile
+          quiet: true
+          soft_fail: true      # Don't "fail" the build, just show me the warnings
