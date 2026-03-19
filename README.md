@@ -1,49 +1,25 @@
 # VoltGuard-DCEO-Sim ⚡
 
 [![Security Scan](https://github.com/CHIFRU19/VoltGuard-DCEO-Sim/actions/workflows/security-scan.yml/badge.svg)](https://github.com/CHIFRU19/VoltGuard-DCEO-Sim/actions)
-[![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)](https://www.docker.com/)
+![Docker Containerized](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)
+![Python](https://img.shields.io/badge/Python-3.9+-yellow?logo=python)
 
-An automated, containerized simulation engine designed to model **Data Center Energy Optimization (DCEO)**. This system replicates a real-world power infrastructure where UPS (Uninterruptible Power Supply) logic intelligently responds to fluctuating utility grid loads via a central MQTT communication bus.
+An automated simulation engine for **Data Center Energy Optimization (DCEO)**. This project replicates a critical infrastructure environment where an intelligent UPS (Uninterruptible Power Supply) monitors utility grid loads and manages power transitions via MQTT telemetry.
 
 ---
 
 ## 🏗️ System Architecture
 
-The simulation is built on a microservices architecture, ensuring modularity and scalability:
+The simulation operates on a microservices architecture. All services communicate over a private Docker network using the **Eclipse Mosquitto** MQTT broker.
 
-* **Communication Bus (Broker)**: An Eclipse Mosquitto instance handling the publish/subscribe messaging pattern.
-* **Utility Producer**: Simulates high-velocity power grid telemetry.
-* **UPS Intelligent Logic**: Consumes telemetry and executes status transitions based on load thresholds.
-* **Central Monitor**: A dedicated logging service for real-time system audit trails.
+```mermaid
+graph TD
+    subgraph Docker_Network
+    A[Utility Producer] -->|Publishes Load Data| B(MQTT Broker)
+    B -->|Routes Telemetry| C[UPS Logic]
+    C -->|State Transitions| B
+    B -->|System Audit| D[Monitoring Station]
+    end
 
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/Mac/Linux)
-* Git
-
-### Installation & Execution
-1.  **Clone the Repository**
-    ```bash
-    git clone [https://github.com/CHIFRU19/VoltGuard-DCEO-Sim.git](https://github.com/CHIFRU19/VoltGuard-DCEO-Sim.git)
-    cd VoltGuard-DCEO-Sim
-    ```
-
-2.  **Initialize the Environment**
-    Build and launch all services in detached mode:
-    ```bash
-    docker-compose up --build -d
-    ```
-
-3.  **Monitor the Live Simulation**
-    View the real-time data flow and system decisions:
-    ```bash
-    docker-compose logs -f
-    ```
-
----
-
-## 🛡️ Security & Compliance
-This project integrates **Checkov** for Static Code Analysis (SCA). Every commit is scanned via GitHub Actions to ensure Docker configuration best practices and to mitigate infrastructure vulnerabilities.
+    style B fill:#2d333b,stroke:#58a6ff,stroke-width:2px
+    style C fill:#1c2128,stroke:#238636,stroke-width:2px
