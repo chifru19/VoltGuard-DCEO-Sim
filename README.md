@@ -23,6 +23,7 @@ graph TD
 
     style B fill:#2d333b,stroke:#58a6ff,stroke-width:2px
     style C fill:#1c2128,stroke:#238636,stroke-width:2px
+
 🧩 Component Breakdown
 MQTT Broker (Mosquitto): The central communication hub. It uses a Publish/Subscribe model to route data between services.
 
@@ -52,14 +53,3 @@ Bash
 docker-compose logs -f
 🛡️ CI/CD & Security
 This repository includes a GitHub Actions workflow that triggers a Checkov Security Scan on every push to ensure Docker security compliance.
-
-
----
-
-### 🚀 Now, send it to GitHub:
-Once you have pasted that and **SAVED** the file (**Cmd+S** or **Ctrl+S**), run these three commands in your terminal:
-
-```bash
-git add README.md
-git commit -m "docs: complete readme with explanations"
-git push origin main
