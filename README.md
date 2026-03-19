@@ -1,5 +1,5 @@
 # VoltGuard-DCEO-Sim ⚡
-Automated DCEO simulation engine developed by **Chifru**. This project replicates a critical infrastructure environment where an intelligent UPS monitors utility grid loads and manages power transitions via MQTT telemetry.
+Automated DCEO simulation engine developed by **Frankfru**. This project replicates a critical infrastructure environment where an intelligent UPS monitors utility grid loads and manages power transitions via MQTT telemetry.
 
 ## 🏗️ System Architecture
 The simulation operates on a microservices architecture communicating over a private Docker network using the Eclipse Mosquitto MQTT broker.
