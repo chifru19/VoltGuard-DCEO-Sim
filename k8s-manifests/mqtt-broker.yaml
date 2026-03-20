@@ -26,5 +26,6 @@ spec:
   selector:
     app: mqtt
   ports:
-    port: 1883
-    targetPort: 1883
+    - protocol: TCP
+      port: 1883
+      targetPort: 1883
