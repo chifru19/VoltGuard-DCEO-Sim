@@ -6,24 +6,26 @@ The simulation operates on a microservices architecture designed for both local 
 
 ```mermaid
 graph TD
-    subgraph K8s_Cluster [Kubernetes Cluster / Docker Network]
-        subgraph Workloads [Pods & Containers]
-            U[Utility Producer]
-            UPS[UPS Intelligent Logic]
-            MON[Monitoring Station]
-            M[MQTT Broker]
+    subgraph K8s_Cluster [Standard Kubernetes Cluster Environment]
+        subgraph Pods [Replicated Workloads]
+            U[Utility Producer Pod]
+            UPS[UPS Intelligent Logic Pod]
+            MON[Monitoring Station Pod]
+            M[MQTT Broker Pod]
         end
-        SVC[MQTT Service / DNS Gateway]
+        
+        SVC[[MQTT Service Gateway]]
     end
 
-    U -->|Publishes Load Data| SVC
-    SVC -->|Routes Traffic| M
-    M -->|Broadcasts State| SVC
-    SVC -->|Routes to| UPS
-    SVC -->|Routes to| MON
+    U -->|Telemetry| SVC
+    SVC -->|Persistence| M
+    M -->|State Updates| SVC
+    SVC -->|Logic Input| UPS
+    SVC -->|Audit Logs| MON
 
-    style SVC fill:#326ce5,color:#fff
-    style K8s_Cluster fill:#f5f5f5,stroke:#326ce5,stroke-width:2px
+    style K8s_Cluster fill:#e1f5fe,stroke:#01579b,stroke-width:3px
+    style SVC fill:#ffecb3,stroke:#ffab00,stroke-width:2px
+    style Pods fill:#ffffff,stroke:#333
 ```
 ☸️ Kubernetes Orchestration (Current Phase)
 The project now includes production-ready manifests for orchestration, providing:
