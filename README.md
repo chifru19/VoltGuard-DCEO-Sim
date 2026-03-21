@@ -1,60 +1,63 @@
-# ⚡ VoltGuard-DCEO-Sim ⚡
+VoltGuard-DCEO: Event-Driven Power Failover Simulation
+🚀 Executive Summary
+VoltGuard-DCEO is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center Engineering & Operations (DCEO) environment. The project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
 
-Automated **DCEO (Data Center Energy Optimization)** simulation engine developed by **Frank Fru**.
+🏗️ System Architecture
+The project follows a Decoupled Pub/Sub Architecture to ensure that a failure in one monitoring component does not impact the core failover logic.
 
----
+1. Utility Producer (The Sensor)
+Role: Simulates a Smart Power Meter.
 
-## 🏗️ System Architecture
+Logic: Generates real-time load data (20% to 90%) and publishes it to the voltguard/utility/load topic every 5 seconds.
 
-![System Architecture](./architecture-diagram.png)
+2. MQTT Broker (The Backbone)
+Technology: Eclipse Mosquitto.
 
----
+Role: Handles all service-to-service communication, ensuring low-latency data routing without direct service coupling.
 
-## ☸️ Kubernetes Orchestration
+3. UPS Logic (The Decision Engine)
+Role: Automated Failover Controller.
 
-The project includes production-ready manifests for orchestration, providing:
+Logic: Subscribes to load data. If the load exceeds a critical threshold (>80%), it triggers an immediate switch to BATTERY_MODE and broadcasts the status update.
 
-* **Service Discovery**: Uses a \ClusterIP` Service (`mqtt-service`) for stable internal DNS mapping.
-*** Self-Healing: Deployments ensure that if a simulator fails, Kubernetes automatically restarts the Pod.
+4. Monitoring Station (The Observability Layer)
+Role: Centralized Logging & Audit Trail.
 
-**---`
+Logic: Captures all system events via a wildcard subscription (voltguard/#), providing a unified view of the facility's health.
 
-<details>
-<summary>🚀 <b>How to Deploy to K8s & View Logs</b></summary>
+🛠️ Technical Stack
+Orchestration: Kubernetes (K8s)
 
-1. **Ensure your cluster** (Docker Desktop/Minikube) is running.
+Containerization: Docker
 
-2. **Apply the core infrastructure**:
-```bash
-kubectl apply -f k8s-manifests/
-```
+Protocol: MQTT (IoT-style messaging)
 
-View live logic engine transitions:
-```bash
-kubectl logs -f deployment/ups-logic --tail=20```bash
-```
+Language: Python 3.9
 
+Infrastructure: YAML-based K8s Manifests
 
+📊 Simulation Flow
+Code snippet
+sequenceDiagram
+    participant Meter as Utility Producer
+    participant Broker as MQTT Broker
+    participant UPS as UPS Logic
+    participant Log as Monitoring Station
 
-</details>`
+    Meter->>Broker: Publish: Load 85%
+    Broker->>UPS: Forward Load Data
+    Broker->>Log: Log Utility Load
+    Note over UPS: Logic: Load > 80%?
+    UPS->>Broker: Publish: Status BATTERY_MODE
+    Broker->>Log: Log UPS Status Change
+📈 Interview Talking Points (DCEO Focus)
+Resilience: Using a central broker to avoid "split-brain" scenarios in failover.
 
-## 🛠️ Troubleshooting & Fixes
+Scalability: Leveraging Kubernetes to manage resource-intensive infrastructure simulations.
 
-| Issue | Resolution |
-| :--- | :--- |
-| **Silent Log Stream** | Set \PYTHONUNBUFFERED=1` to prevent terminal lag. |
-| Connection Failures | Ensure services target the internal ClusterIP `mqtt-service`. |
-| MQTT Protocol Errors | Updated to `CallbackAPIVersion.VERSION2` standards.
+Latency: Choosing MQTT over REST for time-critical industrial telemetry.
 
-## 🛡️ Project Success & Security
-The system is fully secured and verified by automated CI/CD pipelines:
+👤 Author
+[Your Full Name]
 
-- [x] **Security Scan Results**: Verified 100% compliance using **Checkov**.
-- [x] **Service Reliability**: Integrated Docker healthchecks and Kubernetes probes.
-- [x] **Automated QA**: Configured **GitHub Actions** to trigger security scans on every push.
-
----
-
-
-**Created by Frank Fru — Building Resilient Data Center Infrastructure.**
-.
+Role: Aspiring DCEO / Cloud Engineer
