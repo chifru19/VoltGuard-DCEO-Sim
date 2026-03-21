@@ -25,13 +25,15 @@ The project includes production-ready manifests for orchestration, providing:
 1. **Ensure your cluster** (Docker Desktop/Minikube) is running.
 
 2. **Apply the core infrastructure**:
-\``bash
+```bash
 kubectl apply -f k8s-manifests/
-
+```
 
 View live logic engine transitions:
 ```bash
-kubectl logs -f deployment/ups-logic --tail=20
+kubectl logs -f deployment/ups-logic --tail=20```bash
+```
+
 
 
 </details>`
