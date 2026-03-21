@@ -1,0 +1,20 @@
+services:
+  mqtt-broker:  # This name MUST match your Python code
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    networks:
+      - voltguard-net
+
+  monitoring:
+    build: 
+      context: .
+      dockerfile: services/monitor/Dockerfile
+    environment:
+      - MQTT_BROKER=mqtt-broker # Pass the name here
+    networks:
+      - voltguard-net
+
+networks:
+  voltguard-net:
+    driver: bridge
