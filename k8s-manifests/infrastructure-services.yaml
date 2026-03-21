@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ups-logic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ups
+  template:
+    metadata:
+      labels:
+        app: ups
+    spec:
+      containers:
+      - name: ups-logic
+        image: ups-logic:latest
+        env:
+        - name: MQTT_BROKER
+          value: "mqtt-service"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-station
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor
+  template:
+    metadata:
+      labels:
+        app: monitor
+    spec:
+      containers:
+      - name: monitor-station
+        image: monitor-station:latest
+        env:
+        - name: MQTT_BROKER
+          value: "mqtt-service"

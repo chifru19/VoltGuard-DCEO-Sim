@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: utility-producer
+  labels:
+    app: utility
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: utility
+  template:
+    metadata:
+      labels:
+        app: utility
+    spec:
+      containers:
+      - name: utility-simulator
+        image: utility-producer:latest  # Ensure you've built this image locally
+        env:
+        - name: MQTT_BROKER
+          value: "mqtt-service"         # This points to your Yellow Gateway!
+        - name: MQTT_PORT
+          value: "1883"
