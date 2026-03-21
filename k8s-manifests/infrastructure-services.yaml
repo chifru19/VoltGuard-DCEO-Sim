@@ -1,41 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ups-logic
+  name: mqtt-broker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ups
+      app: mqtt
   template:
     metadata:
       labels:
-        app: ups
+        app: mqtt
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
-      - name: ups-logic
-        image: ups-logic:latest
-        env:
-        - name: MQTT_BROKER
-          value: "mqtt-service"
+      - name: mqtt
+        image: eclipse-mosquitto:latest
+        ports:
+        - containerPort: 1883
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: monitor-station
+  name: mqtt-service
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: monitor
-  template:
-    metadata:
-      labels:
-        app: monitor
-    spec:
-      containers:
-      - name: monitor-station
-        image: monitor-station:latest
-        env:
-        - name: MQTT_BROKER
-          value: "mqtt-service"
+    app: mqtt
+  ports:
+    - protocol: TCP
+      port: 1883
+      targetPort: 1883
+      securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - ALL
