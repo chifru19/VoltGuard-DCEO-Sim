@@ -1,18 +1,5 @@
 # VoltGuard-DCEO: Data Center Power Failover Simulation
-## 🛠️ Engineering Challenges & Troubleshooting
-This project involved significant real-world debugging, reflecting the complexities of managing a live Data Center environment.
 
-### 1. Kubernetes Service Discovery (The "Connection Refused" Fix)
-* **Challenge**: Initial pods could not communicate with the `mqtt-broker` service, resulting in `ConnectionRefusedError`.
-* **Solution**: Diagnosed that the services were trying to connect via `localhost` instead of the K8s DNS ClusterIP. Updated the Python logic to use the internal Service name (`mqtt-broker`) and verified connectivity using `kubectl exec` to test the network path.
-
-### 2. Image Pull Policies
-* **Challenge**: Pods remained in `ImagePullBackOff` state after updating the Python code.
-* **Solution**: Implemented `imagePullPolicy: IfNotPresent` and ensured local Docker images were correctly tagged to match the Kubernetes deployment manifests.
-
-### 3. Asynchronous Race Conditions
-* **Challenge**: The Monitor Station would occasionally miss the first "Power On" message if it started after the Producer.
-* **Solution**: Optimized the MQTT `on_connect` callback to ensure the subscription was active before the loop started, ensuring 100% telemetry capture.
 ## 👤 Author
 **Frank Fru**
 * **Role:** Aspiring DCEO / Cloud Infrastructure Engineer
@@ -22,7 +9,7 @@ This project involved significant real-world debugging, reflecting the complexit
 ---
 
 ## 🚀 Project Overview
-**VoltGuard-DCEO** is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center Engineering & Operations (DCEO) environment. The project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
+**VoltGuard-DCEO** is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center (DCEO) environment. The project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
 
 ## 🏗️ System Architecture
 The system utilizes a **Decoupled Pub/Sub Architecture** to ensure that monitoring telemetry never interferes with core failover logic—a critical requirement for Tier III/IV data center standards.
