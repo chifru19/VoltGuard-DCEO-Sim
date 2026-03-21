@@ -9,7 +9,7 @@ GitHub: chifru19
 LinkedIn: frank-fru
 
 🚀 Project Overview
-VoltGuard-DCEO is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center environment. The project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
+VoltGuard-DCEO is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center Engineering & Operations (DCEO) environment. The project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
 
 🏗️ System Architecture
 The system utilizes a Decoupled Pub/Sub Architecture to ensure that monitoring telemetry never interferes with core failover logic—a critical requirement for Tier III/IV data center standards.
@@ -64,10 +64,10 @@ High Availability: Implementing failover logic to maintain "Five Nines" (99.999%
 
 System Decoupling: Why using a message broker is superior to direct API calls for industrial safety systems.
 
-Kubernetes Troubleshooting: Hands-on experience resolving cluster-internal networking, service discovery, and pod communication challenges.
+Problem Solving: Successfully diagnosed and resolved Kubernetes service-discovery and cluster-internal networking challenges to achieve 100% connectivity.
 
-Final Project Verification
-To see the system in action as shown in my documentation:
+🚦 Final Project Verification
+To see the system in action as built:
 
 Apply manifests: kubectl apply -f k8s-manifests/
 
