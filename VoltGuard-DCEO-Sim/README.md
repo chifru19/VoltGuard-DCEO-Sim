@@ -8,7 +8,7 @@ Automated **DCEO (Data Center Energy Optimization)** simulation engine developed
 
 The simulation operates on a microservices architecture designed for both local **Docker** environments and production-grade **Kubernetes (K8s)** clusters.
 
-![System Architecture](./architecture-diagram.png?v=40)
+![System Architecture](./architecture-diagram.png?v=55)
 
 ---
 
