@@ -55,3 +55,10 @@ sequenceDiagram
     Note over UPS: Logic: Load > 80%?
     UPS->>Broker: Publish: Status BATTERY_MODE
     Broker->>Log: Log UPS Status Change
+    📊 Simulation Flow
+
+1. **Utility Producer:** Publishes real-time load telemetry to `voltguard/utility/load`.
+2. **MQTT Broker:** Routes the telemetry to all active subscribers with < 10ms latency.
+3. **UPS Logic:** Subscribes to load data. If load exceeds 80%, it publishes `BATTERY_MODE`.
+4. **Monitoring Station:** Visualizes the live state and health of all components.
+5. **EPMS Incident Logger (New):** Acts as the "Black Box." It captures all critical state changes (e.g., ATS source switches, Utility Failures) and writes them to a persistent `incident_audit_log.txt` for Root Cause Analysis (RCA).
