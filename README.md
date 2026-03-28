@@ -1,4 +1,4 @@
-# VoltGuard-DCEO: Data Center Power Failover Simulation
+# 🔋 VoltGuard-DCEO: Data Center Power Failover Simulation
 
 ## 👤 Author
 **Frank Fru**
@@ -9,10 +9,12 @@
 ---
 
 ## 🚀 Project Overview
-**VoltGuard-DCEO** is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center (DCEO) environment. The project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
+**VoltGuard-DCEO** is a microservices-based "Digital Twin" designed to simulate critical infrastructure management within a Data Center (DCEO) environment. This project demonstrates a robust, automated response to power grid fluctuations, ensuring high availability through event-driven architecture and Kubernetes orchestration.
 
 ## 🏗️ System Architecture
 The system utilizes a **Decoupled Pub/Sub Architecture** to ensure that monitoring telemetry never interferes with core failover logic—a critical requirement for Tier III/IV data center standards.
+
+![System Architecture](./architecture-diagram.png)
 
 ### 1. Utility Producer (The Sensor)
 * **Role:** Simulates a Smart Power Meter at the utility entrance.
@@ -26,9 +28,13 @@ The system utilizes a **Decoupled Pub/Sub Architecture** to ensure that monitori
 * **Role:** Automated Failover Controller.
 * **Function:** Evaluates telemetry. If load exceeds **80%**, it triggers an immediate switch to `BATTERY_MODE`.
 
-### 4. Monitoring Station (The Observability Layer)
-* **Role:** Centralized Audit Trail & Logger.
-* **Function:** Uses wildcard subscriptions (`voltguard/#`) to provide a unified, real-time view of facility health.
+### 4. EPMS Incident Logger (The "Black Box")
+* **Role:** Permanent Audit Trail & RCA Tool.
+* **Function:** Records all critical state changes and utility failures to a persistent `incident_audit_log.txt`.
+
+### 5. Monitoring Station (The Observability Layer)
+* **Role:** Centralized Dashboard.
+* **Function:** Uses wildcard subscriptions (`voltguard/#`) to provide a unified view of facility health.
 
 ---
 
@@ -37,7 +43,7 @@ The system utilizes a **Decoupled Pub/Sub Architecture** to ensure that monitori
 * **Containerization:** Docker
 * **Messaging:** MQTT Protocol (Industrial Standard)
 * **Language:** Python 3.9
-* **Infrastructure:** YAML-based Kubernetes Manifests
+* **Security:** Checkov (IaC Scanning)
 
 ---
 
@@ -47,7 +53,8 @@ sequenceDiagram
     participant Meter as Utility Producer
     participant Broker as MQTT Broker
     participant UPS as UPS Logic
-    participant Log as Monitoring Station
+    participant Log as EPMS Logger
+    participant UI as Monitoring Station
 
     Meter->>Broker: Publish: Load 85%
     Broker->>UPS: Forward Load Data
@@ -55,10 +62,4 @@ sequenceDiagram
     Note over UPS: Logic: Load > 80%?
     UPS->>Broker: Publish: Status BATTERY_MODE
     Broker->>Log: Log UPS Status Change
-    📊 Simulation Flow
-
-1. **Utility Producer:** Publishes real-time load telemetry to `voltguard/utility/load`.
-2. **MQTT Broker:** Routes the telemetry to all active subscribers with < 10ms latency.
-3. **UPS Logic:** Subscribes to load data. If load exceeds 80%, it publishes `BATTERY_MODE`.
-4. **Monitoring Station:** Visualizes the live state and health of all components.
-5. **EPMS Incident Logger (New):** Acts as the "Black Box." It captures all critical state changes (e.g., ATS source switches, Utility Failures) and writes them to a persistent `incident_audit_log.txt` for Root Cause Analysis (RCA).
+    Broker->>UI: Update Dashboard UI
