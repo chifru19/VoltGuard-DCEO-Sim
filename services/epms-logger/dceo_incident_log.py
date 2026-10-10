@@ -1,24 +1,33 @@
+import os
 import paho.mqtt.client as mqtt
-import time
 
-# Use the correct arguments for Paho 2.0+
-def on_connect(client, userdata, flags, rc, properties=None):
-    if rc == 0:
-        print("🛰️  EPMS Logger: Online & Monitoring dc1/roomA/ats01/source")
-        client.subscribe("dc1/roomA/ats01/source")
-    else:
-        print(f"❌ Connection failed with code {rc}")
+BROKER = os.getenv("MQTT_BROKER", "mqtt-broker")
+PORT = 1883
+LOG_FILE = "incident_audit_log.txt"
+
+def on_connect(client, userdata, flags, rc):
+    print(f"Connected to MQTT broker with result code {rc}")
+    client.subscribe("voltguard/#")
 
 def on_message(client, userdata, msg):
-    status = msg.payload.decode()
-    log_time = time.strftime('%H:%M:%S')
-    print(f"🚨 [{log_time}] DCEO EVENT: {status}")
+    payload = msg.payload.decode()
+    log_entry = f"Topic: {msg.topic} | Message: {payload}\n"
+    print(log_entry.strip())
+    with open(LOG_FILE, "a") as f:
+        f.write(log_entry)
 
-# CRITICAL: This line tells Paho we are using the new API version
-client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, "VoltGuard_EPMS_Logger")
-client.on_connect = on_connect
-client.on_message = on_message
+def main():
+    try:
+        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, "EPMS_Logger")
+    except AttributeError:
+        client = mqtt.Client("EPMS_Logger")
+        
+    client.on_connect = on_connect
+    client.on_message = on_message
+    
+    print(f"Connecting EPMS Logger to: {BROKER} on port {PORT}")
+    client.connect(BROKER, PORT, 60)
+    client.loop_forever()
 
-# We know the broker is at 'localhost' because your netstat proved it!
-client.connect("localhost", 1883)
-client.loop_forever()
+if __name__ == "__main__":
+    main()

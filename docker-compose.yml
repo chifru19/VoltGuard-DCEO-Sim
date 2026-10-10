@@ -1,17 +1,41 @@
 services:
-  mqtt-broker:  # This name MUST match your Python code
+  mqtt-broker:
     image: eclipse-mosquitto:latest
     ports:
       - "1883:1883"
     networks:
       - voltguard-net
 
-  monitoring:
-    build: 
-      context: .
-      dockerfile: services/monitor/Dockerfile
+  utility-producer:
+    build:
+      context: ./services/utility
+      dockerfile: Dockerfile
     environment:
-      - MQTT_BROKER=mqtt-broker # Pass the name here
+      - MQTT_BROKER=mqtt-broker
+    depends_on:
+      - mqtt-broker
+    networks:
+      - voltguard-net
+
+  ups-logic:
+    build:
+      context: ./services/ups
+      dockerfile: Dockerfile
+    environment:
+      - MQTT_BROKER=mqtt-broker
+    depends_on:
+      - mqtt-broker
+    networks:
+      - voltguard-net
+
+  epms-logger:
+    build:
+      context: ./services/epms-logger
+      dockerfile: Dockerfile
+    environment:
+      - MQTT_BROKER=mqtt-broker
+    depends_on:
+      - mqtt-broker
     networks:
       - voltguard-net
 
